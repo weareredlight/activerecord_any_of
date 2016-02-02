@@ -41,6 +41,8 @@ module ActiverecordAnyOf
             queries_joins_values[:includes].concat(query.includes_values) if query.includes_values.any?
             queries_joins_values[:joins].concat(query.joins_values) if query.joins_values.any?
             queries_joins_values[:references].concat(query.references_values) if ActiveRecord::VERSION::MAJOR >= 4 && query.references_values.any?
+            queries_joins_values[:group].concat(query.group_values) if query.group_values.any?
+            queries_joins_values[:having].concat(query.having_values) if query.having_values.any?
             query.arel.constraints.reduce(:and)
           end
         end
@@ -55,7 +57,7 @@ module ActiverecordAnyOf
 
         def uniq_queries_joins_values
           @uniq_queries_joins_values ||= begin
-            { includes: [], joins: [], references: [] }.tap do |values|
+            { includes: [], joins: [], references: [], group: [], having: [] }.tap do |values|
               queries_joins_values.each do |join_type, statements|
                 statements.uniq.each do |statement|
                   if statement.respond_to?(:to_sql)
@@ -77,6 +79,8 @@ module ActiverecordAnyOf
           relation = relation.references(uniq_queries_joins_values[:references]) if ActiveRecord::VERSION::MAJOR >= 4
           relation = relation.includes(uniq_queries_joins_values[:includes])
           relation.joins(uniq_queries_joins_values[:joins])
+          relation.group(uniq_queries_joins_values[:group])
+          relation.having(uniq_queries_joins_values[:having])
         end
 
         def add_related_values_to(relation)
@@ -84,6 +88,8 @@ module ActiverecordAnyOf
           relation.includes_values += uniq_queries_joins_values[:includes]
           relation.joins_values += uniq_queries_joins_values[:joins]
           relation.references_values += uniq_queries_joins_values[:references] if ActiveRecord::VERSION::MAJOR >= 4
+          relation.group_values += uniq_queries_joins_values[:group]
+          relation.having_values += uniq_queries_joins_values[:having]
 
           relation
         end
