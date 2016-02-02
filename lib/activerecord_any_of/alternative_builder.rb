@@ -78,9 +78,9 @@ module ActiverecordAnyOf
         def add_joins_to(relation)
           relation = relation.references(uniq_queries_joins_values[:references]) if ActiveRecord::VERSION::MAJOR >= 4
           relation = relation.includes(uniq_queries_joins_values[:includes])
-          relation.joins(uniq_queries_joins_values[:joins])
-          relation.group(uniq_queries_joins_values[:group])
-          relation.having(uniq_queries_joins_values[:having])
+          relation = relation.joins(uniq_queries_joins_values[:joins])
+          relation = relation.group(uniq_queries_joins_values[:group])
+          relation = relation.having(uniq_queries_joins_values[:having])
         end
 
         def add_related_values_to(relation)
