@@ -17,7 +17,7 @@ module ActiverecordAnyOf
 
       def initialize(context, *source_queries)
         @context, @source_queries = context, source_queries
-        @queries_bind_values, @queries_joins_values = [], { includes: [],  joins: [], references: [] }
+        @queries_bind_values, @queries_joins_values = [], { includes: [],  joins: [], references: [], group: [], having: [] }
       end
 
       def build
