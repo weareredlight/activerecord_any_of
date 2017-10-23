@@ -42,7 +42,7 @@ module ActiverecordAnyOf
             queries_joins_values[:joins].concat(query.joins_values) if query.joins_values.any?
             queries_joins_values[:references].concat(query.references_values) if ActiveRecord::VERSION::MAJOR >= 4 && query.references_values.any?
             queries_joins_values[:group].concat(query.group_values) if query.group_values.any?
-            queries_joins_values[:having].concat(query.having_values) if query.having_values.any?
+            queries_joins_values[:having].concat(query.having_values) if query.having_clause.send(:predicates).any?
             query.arel.constraints.reduce(:and)
           end
         end
